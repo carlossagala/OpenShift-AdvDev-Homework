@@ -23,7 +23,7 @@ podTemplate(
     def prodProject = "${GUID}-tasks-prod"
     // Checkout Source Code.
     stage('Checkout Source') {
-      
+
        git 'https://github.com/carlossagala/OpenShift-AdvDev-Homework.git'
 
     }
@@ -53,7 +53,7 @@ podTemplate(
 
 
       stage('Unit Tests && Code Analysis') {
-        steps {
+
           parallel(
             a:{
               echo "Running Unit Tests"
@@ -65,7 +65,7 @@ podTemplate(
               sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
             }
             )
-        }
+
       }
 
       // Using Maven run the unit tests
@@ -195,7 +195,7 @@ podTemplate(
       stage('Switch over to new Version') {
         echo "Switching Production application to ${destApp}."
         // TBD: Execute switch
-        steps {
+      
         input "Switch Production?"
 
         echo "Switching Production application to ${destApp}."
@@ -208,7 +208,7 @@ podTemplate(
             }
           }
         }
-      }
+
     }
   }
 }
