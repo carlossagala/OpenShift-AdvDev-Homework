@@ -23,9 +23,9 @@ podTemplate(
     def prodProject = "${GUID}-tasks-prod"
     // Checkout Source Code.
     stage('Checkout Source') {
-      steps {
+      
        git 'https://github.com/carlossagala/OpenShift-AdvDev-Homework.git'
-     }
+
     }
 
     // Build the Tasks Service
