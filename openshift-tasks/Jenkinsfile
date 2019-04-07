@@ -1,5 +1,5 @@
 #!groovy
-def GUID = "08a2"
+def GUID = "f2a5"
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
