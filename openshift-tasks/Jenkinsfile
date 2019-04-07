@@ -124,12 +124,21 @@ podTemplate(
               // Deploy the development application.
               openshift.selector("dc", "tasks").rollout().latest();
               // Wait for application to be deployed
+
+
+
               def dc = openshift.selector("dc", "tasks").object()
-              while (dc.spec.replicas != dc.status.availableReplicas) {
-              echo "Replicas: ${dc.status.availableReplicas}, Desired: ${dc.spec.replicas}"
-              sleep 1
-              dc = openshift.selector("dc", "tasks").object();
-            }
+              def dc_version = dc.status.latestVersion
+              def rc = openshift.selector("rc", "tasks-${dc_version}").object()
+
+              echo "Waiting for ReplicationController tasks-${dc_version} to be ready"
+              while (rc.spec.replicas != rc.status.readyReplicas) {
+              sleep 5
+              rc = openshift.selector("rc", "tasks-${dc_version}").object()
+          }
+
+
+
           }
         }
       }
@@ -184,10 +193,13 @@ podTemplate(
               openshift.selector("dc", "${destApp}").rollout().latest();
 
               // Wait for application to be deployed
-              while (dc.spec.replicas != dc.status.availableReplicas) {
-                echo "Replicas: ${dc.status.availableReplicas}, Desired: ${dc.spec.replicas}"
-                sleep 1
-                dc = openshift.selector("dc/${destApp}").object()
+              def dc_prod = openshift.selector("dc", "${destApp}").object()
+              def dc_version = dc_prod.status.latestVersion
+              def rc_prod = openshift.selector("rc", "${destApp}-${dc_version}").object()
+              echo "Waiting for ${destApp} to be ready"
+              while (rc_prod.spec.replicas != rc_prod.status.readyReplicas) {
+              sleep 5
+              rc_prod = openshift.selector("rc", "${destApp}-${dc_version}").object()
               }
             }
           }
