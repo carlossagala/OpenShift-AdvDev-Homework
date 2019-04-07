@@ -127,11 +127,11 @@ podTemplate(
               def dc = openshift.selector("dc", "tasks").object()
 
               dc.spec.template.spec.containers[0].env[0].value="${devTag} (tasks-dev)"
-              
+              openshift.apply(dc)
               // Deploy the development application.
               openshift.selector("dc", "tasks").rollout().latest();
 
-              def dc_version = dc.status.latestVersion
+              def dc_version = openshift.selector("dc", "${destApp}").object().status.latestVersion
               def rc = openshift.selector("rc", "tasks-${dc_version}").object()
 
               echo "Waiting for ReplicationController tasks-${dc_version} to be ready"
