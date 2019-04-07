@@ -122,13 +122,15 @@ podTemplate(
               openshift.selector('configmap', 'tasks-config').delete()
               def configmap = openshift.create('configmap', 'tasks-config', '--from-file=./configuration/application-users.properties', '--from-file=./configuration/application-roles.properties' )
 
+              
+              // Wait for application to be deployed
+              def dc = openshift.selector("dc", "tasks").object()
+
+              dc.spec.template.spec.containers[0].env[0].value="${devTag} (tasks-dev)"
+              
               // Deploy the development application.
               openshift.selector("dc", "tasks").rollout().latest();
-              // Wait for application to be deployed
 
-
-
-              def dc = openshift.selector("dc", "tasks").object()
               def dc_version = dc.status.latestVersion
               def rc = openshift.selector("rc", "tasks-${dc_version}").object()
 
@@ -184,6 +186,7 @@ podTemplate(
               // Update the Image on the Production Deployment Config
               def dc = openshift.selector("dc/${destApp}").object()
               dc.spec.template.spec.containers[0].image="nexus-registry-gpte-hw-cicd.apps.na311.openshift.opentlc.com/tasks:${prodTag}"
+              dc.spec.template.spec.containers[0].env[0].value="${prodTag} (${destApp})"
               openshift.apply(dc)
 
               // Update Config Map in change config files changed in the source
