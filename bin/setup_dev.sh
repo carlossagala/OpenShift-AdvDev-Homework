@@ -12,7 +12,7 @@ echo "Setting up Tasks Development Environment in project ${GUID}-tasks-dev"
 # Set up Dev Project
 oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n ${GUID}-tasks-dev
 
-export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
+export CLUSTER="master.na311.openshift.opentlc.com"
 
 # Set up Dev Application
 # oc new-build --binary=true --name="tasks" jboss-eap71-openshift:1.3 -n ${GUID}-tasks-dev

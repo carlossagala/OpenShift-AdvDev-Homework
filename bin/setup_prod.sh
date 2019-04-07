@@ -9,7 +9,9 @@ fi
 GUID=$1
 echo "Setting up Tasks Production Environment in project ${GUID}-tasks-prod"
 
-export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
+//export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
+export CLUSTER="master.na311.openshift.opentlc.com"
+
 
 # Set up Production Project
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${GUID}-tasks-prod -n ${GUID}-tasks-dev
