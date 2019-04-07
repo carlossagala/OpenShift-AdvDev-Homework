@@ -9,6 +9,8 @@ fi
 GUID=$1
 echo "Setting up Tasks Production Environment in project ${GUID}-tasks-prod"
 
+export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
+
 # Set up Production Project
 oc policy add-role-to-group system:image-puller system:serviceaccounts:${GUID}-tasks-prod -n ${GUID}-tasks-dev
 oc policy add-role-to-user edit system:serviceaccount:${GUID}-jenkins:jenkins -n ${GUID}-tasks-prod
@@ -39,4 +41,4 @@ oc set probe dc/tasks-green --liveness --get-url=http://:8080/ --initial-delay-s
 oc set env dc/tasks-green VERSION='0.0 (tsks-green)' -n ${GUID}-tasks-prod
 
 # Expose Blue service as route to make green application active
-oc expose svc/tasks-green --name tasks -n ${GUID}-tasks-prod
+oc expose svc/tasks-green --name tasks --hostname=tasks-${GUID}-tasks-prod.apps.${CLUSTER} -n ${GUID}-tasks-prod
