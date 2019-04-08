@@ -9,8 +9,8 @@ fi
 GUID=$1
 echo "Setting up Tasks Production Environment in project ${GUID}-tasks-prod"
 
-//export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
-export CLUSTER="master.na311.openshift.opentlc.com"
+#export CLUSTER=`echo $(oc whoami --show-server=true) | awk -F[/:] '{print $4}'`
+#export CLUSTER="master.na311.openshift.opentlc.com"
 
 
 # Set up Production Project
@@ -43,4 +43,5 @@ oc set probe dc/tasks-green --liveness --get-url=http://:8080/ --initial-delay-s
 oc set env dc/tasks-green VERSION='0.0 (tsks-green)' -n ${GUID}-tasks-prod
 
 # Expose Blue service as route to make green application active
-oc expose svc/tasks-green --name tasks --hostname=tasks-${GUID}-tasks-prod.apps.${CLUSTER} -n ${GUID}-tasks-prod
+#oc expose svc/tasks-green --name tasks --hostname=tasks-${GUID}-tasks-prod.apps.${CLUSTER} -n ${GUID}-tasks-prod
+oc expose svc/tasks-green --name tasks -n ${GUID}-tasks-prod
